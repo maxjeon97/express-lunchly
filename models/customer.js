@@ -16,17 +16,6 @@ class Customer {
     this.notes = notes;
   }
 
-  get phone() {
-    return this._phone;
-  }
-
-  set phone(val) {
-    if (val.length !== 10) {
-      throw new Error("Invalid phone number");
-    }
-    this._phone = val;
-  }
-
   get notes() {
     return this._notes;
   }
@@ -54,7 +43,6 @@ class Customer {
            ORDER BY last_name, first_name`, [`%${name}%`]
     );
     return results.rows.map(c => new Customer(c));
-
   }
 
 

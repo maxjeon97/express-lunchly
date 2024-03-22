@@ -22,7 +22,7 @@ class Reservation {
   }
 
   set customerId(val) {
-    if (this._customerId)
+    if (this._customerId && val !== this._customerId)
       throw new Error("Cannot reassign customer ID");
     this._customerId = val;
   }
@@ -40,7 +40,7 @@ class Reservation {
   get startAt() {
     return this._startAt;
   }
-  // what are underscores in this scenario
+
   set startAt(val) {
     if (isNaN(new Date(val)))
       throw new Error("Must input in valid date format");
