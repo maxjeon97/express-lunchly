@@ -27,17 +27,29 @@ class Reservation {
 
   static async getReservationsForCustomer(customerId) {
     const results = await db.query(
-          `SELECT id,
+      `SELECT id,
                   customer_id AS "customerId",
                   num_guests AS "numGuests",
                   start_at AS "startAt",
                   notes AS "notes"
            FROM reservations
            WHERE customer_id = $1`,
-        [customerId],
+      [customerId]
     );
 
     return results.rows.map(row => new Reservation(row));
+  }
+
+  /**Saves a reservation */
+
+  async save() {
+    const result = await db.query(
+      `INSERT INTO reservations (customerId, startAt, numGuests, notes)
+             VALUES ($1, $2, $3, $4)
+             RETURNING id`,
+      [this.customerId, this.startAt, this.numGuests, this.notes],
+    );
+    this.id = result.rows[0].id;
   }
 }
 

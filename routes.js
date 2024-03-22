@@ -17,6 +17,18 @@ router.get("/", async function (req, res, next) {
   return res.render("customer_list.jinja", { customers });
 });
 
+/** Search: show list of customers that match search term. */
+
+router.get("/search", async function (req, res, next) {
+  const name = req.query["name"];
+
+  // change search input to correct casing for cases where all lowercase letters
+  const casedName = name.charAt(0).toUpperCase() + name.slice(1);
+  const customers = await Customer.getMatchingCustomers(casedName);
+
+  return res.render("customer_list.jinja", { customers });
+});
+
 /** Form to add a new customer. */
 
 router.get("/add/", async function (req, res, next) {
