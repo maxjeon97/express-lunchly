@@ -9,6 +9,8 @@ const { NotFoundError } = require("./expressError");
 
 const app = new express();
 
+// Parse body for JSON data
+app.use(express.json());
 // Parse body for urlencoded (traditional form) data
 app.use(express.urlencoded());
 

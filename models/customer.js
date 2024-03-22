@@ -57,7 +57,7 @@ class Customer {
                   c.phone,
                   c.notes
            FROM customers AS c
-           LEFT JOIN reservations AS r
+           JOIN reservations AS r
            ON r.customer_id = c.id
            GROUP BY c.id
            ORDER BY COUNT(*) DESC
