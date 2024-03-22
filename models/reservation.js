@@ -17,6 +17,47 @@ class Reservation {
     this.notes = notes;
   }
 
+  get customerId() {
+    return this._customerId;
+  }
+
+  set customerId(val) {
+    if (this._customerId)
+      throw new Error("Cannot reassign customer ID");
+    this._customerId = val;
+  }
+
+  get numGuests() {
+    return this._numGuests;
+  }
+
+  set numGuests(val) {
+    if (val <= 0)
+      throw new Error("Need at least one guest to make a reservation");
+    this._numGuests = val;
+  }
+
+  get startAt() {
+    return this._startAt;
+  }
+  // what are underscores in this scenario
+  set startAt(val) {
+    if (isNaN(new Date(val)))
+      throw new Error("Must input in valid date format");
+    this._startAt = new Date(val);
+  }
+
+  get notes() {
+    return this._notes;
+  }
+
+  set notes(val) {
+    if(!val) {
+      this._notes = "";
+    }
+    this._notes = val;
+  }
+
   /** formatter for startAt */
 
   getFormattedStartAt() {
@@ -43,15 +84,29 @@ class Reservation {
   /**Saves a reservation */
 
   async save() {
-    const result = await db.query(
-      `INSERT INTO reservations (customer_id, start_at, num_guests, notes)
+    if (this.id === undefined) {
+      const result = await db.query(
+        `INSERT INTO reservations (customer_id, start_at, num_guests, notes)
              VALUES ($1, $2, $3, $4)
              RETURNING id`,
-      [this.customerId, this.startAt, this.numGuests, this.notes],
-    );
-    this.id = result.rows[0].id;
+        [this.customerId, this.startAt, this.numGuests, this.notes],
+      );
+      this.id = result.rows[0].id;
+    } else {
+      await db.query(
+        `UPDATE reservations
+             SET start_at=$1,
+                 num_guests=$2,
+                 notes=$3
+             WHERE id = $4`, [
+        this.startAt,
+        this.numGuests,
+        this.notes,
+        this.id
+      ],
+      );
+    }
   }
 }
-
 
 module.exports = Reservation;

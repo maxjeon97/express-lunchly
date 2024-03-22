@@ -16,9 +16,33 @@ class Customer {
     this.notes = notes;
   }
 
+  get phone() {
+    return this._phone;
+  }
+
+  set phone(val) {
+    if (val.length !== 10) {
+      throw new Error("Invalid phone number");
+    }
+    this._phone = val;
+  }
+
+  get notes() {
+    return this._notes;
+  }
+
+  set notes(val) {
+    if (!val) {
+      this._notes = "";
+    }
+    else {
+      this._notes = val;
+    }
+  }
+
   /** find all customers. */
 
-  static async all() {
+  static async all(name = "") {
     const results = await db.query(
       `SELECT id,
                   first_name AS "firstName",
@@ -26,26 +50,13 @@ class Customer {
                   phone,
                   notes
            FROM customers
-           ORDER BY last_name, first_name`,
+           WHERE concat(first_name, ' ', last_name) ILIKE $1
+           ORDER BY last_name, first_name`, [`%${name}%`]
     );
     return results.rows.map(c => new Customer(c));
+
   }
 
-  /** find all customers that match name */
-
-  static async getMatchingCustomers(name) {
-    const results = await db.query(
-      `SELECT id,
-                  first_name AS "firstName",
-                  last_name  AS "lastName",
-                  phone,
-                  notes
-           FROM customers
-           WHERE first_name ILIKE $1 OR last_name ILIKE $1
-           ORDER BY last_name, first_name`, [`${name}%`]
-    );
-    return results.rows.map(c => new Customer(c));
-  }
 
   /** get top 10 customers */
   static async getTopTenCustomers() {
@@ -128,7 +139,7 @@ class Customer {
 
   /** Return full name of customer */
 
-  getFullName() {
+  get fullName() {
     return `${this.firstName} ${this.lastName}`;
   }
 }

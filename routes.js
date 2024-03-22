@@ -20,8 +20,8 @@ router.get("/", async function (req, res, next) {
 /** Search: show list of customers that match search term. */
 
 router.get("/search", async function (req, res, next) {
-  const name = req.query["name"];
-  const customers = await Customer.getMatchingCustomers(name);
+  const name = req.query.name;
+  const customers = await Customer.all(name);
 
   return res.render("customer_list.jinja", { customers });
 });
@@ -93,9 +93,20 @@ router.post("/:id/add-reservation/", async function (req, res, next) {
   if (req.body === undefined) {
     throw new BadRequestError();
   }
+
   const customerId = req.params.id;
+
   const startAt = new Date(req.body.startAt);
-  const numGuests = req.body.numGuests;
+
+  if (isNaN(startAt)) {
+    return res.redirect(`/${customerId}`);
+  }
+
+  const numGuests = Number(req.body.numGuests);
+  if (numGuests === NaN || numGuests <= 0) {
+    return res.redirect(`/${customerId}`);
+  }
+
   const notes = req.body.notes;
 
   const reservation = new Reservation({
@@ -104,6 +115,7 @@ router.post("/:id/add-reservation/", async function (req, res, next) {
     numGuests,
     notes,
   });
+
   await reservation.save();
 
   return res.redirect(`/${customerId}/`);
