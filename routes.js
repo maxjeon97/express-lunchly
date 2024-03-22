@@ -21,10 +21,7 @@ router.get("/", async function (req, res, next) {
 
 router.get("/search", async function (req, res, next) {
   const name = req.query["name"];
-
-  // change search input to correct casing for cases where all lowercase letters
-  const casedName = name.charAt(0).toUpperCase() + name.slice(1);
-  const customers = await Customer.getMatchingCustomers(casedName);
+  const customers = await Customer.getMatchingCustomers(name);
 
   return res.render("customer_list.jinja", { customers });
 });
@@ -32,11 +29,10 @@ router.get("/search", async function (req, res, next) {
 /** Get top 10 customers ordered by most reservations */
 
 router.get("/top-ten/", async function (req, res, next) {
-  const customers = await Customer.getTopTenCustomers()
-  console.log(customers)
+  const customers = await Customer.getTopTenCustomers();
 
   return res.render("customer_topten.jinja", { customers });
-})
+});
 
 /** Form to add a new customer. */
 

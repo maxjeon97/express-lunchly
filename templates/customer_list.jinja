@@ -6,6 +6,10 @@
 
   <h1>Customers</h1>
 
+  {% if customers.length === 0 %}
+  <h6>&nbsp;There are no customers with that name!</h6>
+  {% endif %}
+
   <ul style="column-count: 4">
     {% for customer in customers %}
       <li>
