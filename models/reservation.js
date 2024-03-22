@@ -44,7 +44,7 @@ class Reservation {
 
   async save() {
     const result = await db.query(
-      `INSERT INTO reservations (customerId, startAt, numGuests, notes)
+      `INSERT INTO reservations (customer_id, start_at, num_guests, notes)
              VALUES ($1, $2, $3, $4)
              RETURNING id`,
       [this.customerId, this.startAt, this.numGuests, this.notes],

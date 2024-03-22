@@ -29,6 +29,15 @@ router.get("/search", async function (req, res, next) {
   return res.render("customer_list.jinja", { customers });
 });
 
+/** Get top 10 customers ordered by most reservations */
+
+router.get("/top-ten/", async function (req, res, next) {
+  const customers = await Customer.getTopTenCustomers()
+  console.log(customers)
+
+  return res.render("customer_topten.jinja", { customers });
+})
+
 /** Form to add a new customer. */
 
 router.get("/add/", async function (req, res, next) {
